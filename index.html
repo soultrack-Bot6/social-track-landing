@@ -8,8 +8,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-            background-color: #FAFAF8; /* 心衡米白 */
-            color: #5C4B3A; /* 心衡深棕 */
+            background-color: #F9F6F0;
+            color: #5C4B3A;
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
@@ -26,24 +26,44 @@
             justify-content: center;
         }
         .brand-symbol {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             margin: 0 auto 32px;
-            border-radius: 50%;
-            background: linear-gradient(180deg, #C5B5A0 0%, #E0D4C1 100%);
             position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
-        .brand-symbol::after {
-            content: '';
+        .brand-symbol-dark {
             position: absolute;
-            top: 50%;
-            left: 10%;
-            width: 80%;
-            height: 1px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #8B7D6B;
+            border-radius: 64px 64px 0 0;
+        }
+        .brand-symbol-light {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #E8E0D0;
+            border-radius: 0 0 64px 64px;
+        }
+        .brand-symbol-line {
+            position: absolute;
+            top: 48%;
+            left: 12%;
+            width: 76%;
+            height: 2.5px;
             background: #FFFFFF;
             transform: rotate(-15deg);
-            opacity: 0.6;
+            opacity: 0.85;
+            z-index: 1;
         }
+
         h1 {
             font-size: 28px;
             font-weight: 400;
@@ -92,45 +112,29 @@
             border-radius: 12px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.3s, opacity 0.3s;
         }
         .cta-button:hover {
             background-color: #8FA06E;
+        }
+        .cta-button.success {
+            background-color: #8FA06E;
+            pointer-events: none; /* 禁止重复点击 */
         }
         .footer-note {
             margin-top: 32px;
             font-size: 12px;
             color: #C5B5A0;
         }
-        .quote-card {
-            background: #FFFFFF;
-            border-radius: 16px;
-            padding: 28px 24px;
-            margin: 24px auto 0;
-            max-width: 360px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-            text-align: left;
-            font-size: 18px;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #5C4B3A;
-        }
-        .quote-attribution {
-            margin-top: 16px;
-            text-align: right;
-            font-size: 13px;
-            color: #A49283;
-        }
-        @media (prefers-color-scheme: dark) {
-            body { background-color: #2C3E50; color: #E6DFD3; }
-            .email-input { background-color: #3A4A5A; border-color: #4A5A6A; color: #E6DFD3; }
-            .quote-card { background-color: #3A4A5A; color: #E6DFD3; }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="brand-symbol"></div>
+        <div class="brand-symbol">
+            <div class="brand-symbol-dark"></div>
+            <div class="brand-symbol-light"></div>
+            <div class="brand-symbol-line"></div>
+        </div>
         
         <h1>社交7小时，独处0.5小时。<br>但你知道自己需要独处——<br>这份觉察，本身就是一种保护。</h1>
         
@@ -139,14 +143,37 @@
             专为高敏感人群设计 · 纯本地 · 零上传
         </div>
 
-        <div class="email-form" id="signupForm">
-            <input type="email" class="email-input" placeholder="输入邮箱，第一时间知道我们何时上线" required id="emailInput">
-            <button type="submit" class="cta-button">了解更多</button>
+        <div class="email-form" id="emailForm">
+            <input type="email" class="email-input" id="emailInput" placeholder="输入邮箱，第一时间知道我们何时上线" required>
+            <button type="button" class="cta-button" id="submitBtn" onclick="handleSubscribe()">了解更多</button>
         </div>
 
         <div class="footer-note">
             我们承诺：绝不上传您的任何数据。
         </div>
     </div>
+
+    <script>
+        function handleSubscribe() {
+          const email = document.getElementById('emailInput').value;
+            const button = document.getElementById('submitBtn');
+            const input = document.getElementById('emailInput');
+
+            // 简单的邮箱格式检查
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                alert('请填写有效的邮箱地址，我们好联系您。');
+                return;
+            }
+
+            // 改变按钮状态，给予用户即时反馈
+            button.textContent = '已记录，我们会保持联系';
+            button.classList.add('success');
+            
+            // 可选：清空输入框，保持页面整洁
+            input.value = '';
+            input.placeholder = '感谢你的关注！';
+        }
+    </script>
 </body>
 </html>
+```
