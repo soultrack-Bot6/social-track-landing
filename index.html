@@ -119,12 +119,18 @@
         }
         .cta-button.success {
             background-color: #8FA06E;
-            pointer-events: none; /* 禁止重复点击 */
+            pointer-events: none;
         }
         .footer-note {
             margin-top: 32px;
             font-size: 12px;
             color: #C5B5A0;
+        }
+        .message {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #A3B18A;
+            min-height: 20px;
         }
     </style>
 </head>
@@ -143,10 +149,11 @@
             专为高敏感人群设计 · 纯本地 · 零上传
         </div>
 
-        <div class="email-form" id="emailForm">
-            <input type="email" class="email-input" id="emailInput" placeholder="输入邮箱，第一时间知道我们何时上线" required>
-            <button type="button" class="cta-button" id="submitBtn" onclick="handleSubscribe()">了解更多</button>
-        </div>
+        <form class="email-form" id="emailForm">
+            <input type="email" name="email" class="email-input" id="emailInput" placeholder="输入邮箱，第一时间知道我们何时上线" required>
+            <button type="submit" class="cta-button" id="submitBtn">了解更多</button>
+            <div id="formMessage" class="message"></div>
+        </form>
 
         <div class="footer-note">
             我们承诺：绝不上传您的任何数据。
@@ -154,26 +161,38 @@
     </div>
 
     <script>
-        function handleSubscribe() {
-          const email = document.getElementById('emailInput').value;
-            const button = document.getElementById('submitBtn');
-            const input = document.getElementById('emailInput');
+        const FORM_ID = "1FAIpQLSdGRjqC3HmBMz0ofpoHcVMdsZykKT3iNHQOn4JVfMH9zq_UCQ";
+        const FORM_URL = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`;
+        
+        const form = document.getElementById('emailForm');
+        const button = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('formMessage');
 
-            // 简单的邮箱格式检查
-            if (!email || !email.includes('@') || !email.includes('.')) {
-                alert('请填写有效的邮箱地址，我们好联系您。');
-                return;
-            }
-
-            // 改变按钮状态，给予用户即时反馈
-            button.textContent = '已记录，我们会保持联系';
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            
+            button.textContent = '正在提交...';
             button.classList.add('success');
             
-            // 可选：清空输入框，保持页面整洁
-            input.value = '';
-            input.placeholder = '感谢你的关注！';
-        }
+            try {
+                await fetch(FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+                
+                button.textContent = '已记录，我们会保持联系';
+                messageDiv.textContent = '感谢你的关注！';
+                form.reset();
+                
+            } catch (error) {
+                button.textContent = '了解更多';
+                button.classList.remove('success');
+                messageDiv.textContent = '提交失败，请稍后重试';
+            }
+        });
     </script>
 </body>
 </html>
-```
